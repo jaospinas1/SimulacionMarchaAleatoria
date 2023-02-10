@@ -1,0 +1,88 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+#Marcha Aleatoria en Tres Dimensiones
+
+#Definición de Funciones
+
+def init():
+    print('Bienvenido a la simulación de marcha aleatoria en tres dimensiones. \nA continuación, ingrese el valor deseado de iteraciones.')
+    return int(input('N = '))
+
+
+def simulation(N):
+    r=[0,0,0]
+    X=[0]
+    Y=[0]
+    Z=[0]
+
+    n=1
+    while n<=N:
+        #Dimensión
+        d=np.random.randint(0,3)
+        #Dirección
+        a=np.random.randint(0,2)
+        if a==0:
+            a=-1
+        r[d]+=a
+        X.append(r[0])
+        Y.append(r[1])
+        Z.append(r[2])
+        n+=1
+    return (X,Y,Z,r)
+
+def plot(X,Y,Z):
+    fig=plt.figure()
+    ax=fig.add_subplot(111,projection='3d')
+    ax.plot(X,Y,Z)
+    plt.show()
+
+def hist(R,N,M):
+    sns.histplot(data=R)
+    plt.xlabel('|r|')
+    plt.title(label='N = '+str(N)+', M = '+str(M))
+    plt.show()
+
+
+
+simulando=True
+
+while simulando:
+    N=init()
+    print('¿Cuantas veces desea repetir la simulación para construir el histograma? ')
+    M=int(input('M = ')) 
+    m=1
+    results=[]
+    R=[]
+    rsum=0
+    r2sum=0
+    while m<=M:
+        sim=simulation(N)
+        results.append(sim)
+        R.append(np.sqrt(sim[3][0]**2+sim[3][1]**2+sim[3][2]**2))
+        rsum+=(np.sqrt(sim[3][0]**2+sim[3][1]**2+sim[3][2]**2))
+        r2sum+=(sim[3][0]**2+sim[3][1]**2+sim[3][2]**2)
+        m+=1
+    print('Revisión de Marchas \n ¿Desea revisar alguna de las marchas? \n 1. Sí \n 2. No')
+    rev=int(input(': '))
+    while rev==1:
+        march=int(input('Ingrese el entero 0 < m < '+str(M+1)+' de la marcha que desea revisar: '))
+        plot(results[march-1][0],results[march-1][1],results[march-1][2])
+        print('¿Desea revisar otra de las marchas? \n 1. Sí \n 2. No')
+        rev=int(input(' '))
+
+
+    hist(R,N,M)
+
+    Er=rsum/M
+    Er2=r2sum/M
+    print('<r> = '+str(Er)+'\n<r^2> = '+str(Er2)+', N = '+str(N))
+
+    
+
+
+
+    rep=int(input('Digite 1 si desea correr de nuevo el programa, o 2 de lo contrario: '))
+    if not rep==1:
+        simulando=False
